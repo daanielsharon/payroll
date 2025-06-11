@@ -12,16 +12,46 @@ import (
 	"shared/router"
 )
 
-func reverseProxy(target string) http.HandlerFunc {
+type Server struct {
+	Name   string
+	Port   string
+	Target string
+}
+
+func getServers(cfg config.ApplicationConfig) []Server {
+	server := cfg.Server
+	host := server.Host
+	return []Server{
+		{
+			Name:   "payroll",
+			Port:   server.PayrollPort,
+			Target: "http://" + host + ":" + server.PayrollPort,
+		},
+		{
+			Name:   "overtime",
+			Port:   server.OvertimePort,
+			Target: "http://" + host + ":" + server.OvertimePort,
+		},
+		{
+			Name:   "attendance",
+			Port:   server.AttendancePort,
+			Target: "http://" + host + ":" + server.AttendancePort,
+		},
+		{
+			Name:   "reimbursement",
+			Port:   server.ReimbursementPort,
+			Target: "http://" + host + ":" + server.ReimbursementPort,
+		},
+	}
+}
+
+func reverseProxy(target, name string) http.HandlerFunc {
 	targetURL, _ := url.Parse(strings.TrimSuffix(target, "/"))
 	proxy := httputil.NewSingleHostReverseProxy(targetURL)
-	prefix := targetURL.Path
-	if prefix == "" {
-		prefix = "/"
-	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		r.URL.Path = strings.TrimPrefix(r.URL.Path, prefix)
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/"+name)
+		fmt.Println("url path", r.URL.Path)
 		if !strings.HasPrefix(r.URL.Path, "/") {
 			r.URL.Path = "/" + r.URL.Path
 		}
@@ -32,12 +62,12 @@ func reverseProxy(target string) http.HandlerFunc {
 
 func main() {
 	r := router.NewBaseRouter()
-	config := config.LoadConfig()
-	port := fmt.Sprintf(":%s", config.Server.GatewayPort)
-	r.Handle("/payroll/*", reverseProxy(":"+config.Server.PayrollPort))
-	r.Handle("/overtime/*", reverseProxy(":"+config.Server.OvertimePort))
-	r.Handle("/attendance/*", reverseProxy(":"+config.Server.AttendancePort))
-	r.Handle("/reimbursement/*", reverseProxy(":"+config.Server.ReimbursementPort))
+	cfg := config.LoadConfig()
+	port := fmt.Sprintf(":%s", cfg.Server.GatewayPort)
+
+	for _, server := range getServers(cfg) {
+		r.Handle("/"+server.Name+"/*", reverseProxy(server.Target, server.Name))
+	}
 
 	log.Printf("Gateway starting on port %s", port)
 	http.ListenAndServe(port, r)

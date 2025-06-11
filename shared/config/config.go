@@ -37,7 +37,6 @@ func LoadConfig() ApplicationConfig {
 	}
 
 	host := os.Getenv("HOST")
-	fmt.Println("HOST", host)
 	return ApplicationConfig{
 		DB: DB{
 			Host:     os.Getenv("DB_HOST"),

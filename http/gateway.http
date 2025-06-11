@@ -1,0 +1,11 @@
+### Payroll
+GET http://localhost:8080/payroll/
+
+### Reimbursement
+GET http://localhost:8080/reimbursement/
+
+### Attendance
+GET http://localhost:8080/attendance/
+
+### Overtime
+GET http://localhost:8080/overtime/
