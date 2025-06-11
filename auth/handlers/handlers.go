@@ -4,6 +4,8 @@ import (
 	"auth/services"
 	"encoding/json"
 	"net/http"
+
+	httphelper "shared/http"
 )
 
 type Handler struct {
@@ -21,15 +23,11 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewDecoder(r.Body).Decode(&credentials)
+	token, err := h.services.Login(credentials.Username, credentials.Password)
+	if err != nil {
+		httphelper.JSONResponse(w, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
 
-	// user, err := h.storage.GetUser(credentials.Username)
-	// if err != nil {
-	// 	http.Error(w, "invalid credentials", http.StatusUnauthorized)
-	// 	return
-	// }
-
-	// if user.Password != credentials.Password {
-	// 	http.Error(w, "invalid credentials", http.StatusUnauthorized)
-	// 	return
-	// }
+	httphelper.JSONResponse(w, http.StatusOK, "login successful", token)
 }

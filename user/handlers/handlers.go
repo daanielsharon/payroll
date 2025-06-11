@@ -16,7 +16,7 @@ func NewHandler(services services.ServiceInterface) HandlerInterface {
 }
 
 func (h *Handler) GetUserByUsername(w http.ResponseWriter, r *http.Request) {
-	username := httphelper.GetRouteParam(r, "username")
+	username := httphelper.GetQueryParams(r, "username")
 	user, err := h.services.GetUserByUsername(username)
 	if err != nil {
 		httphelper.JSONResponse(w, http.StatusBadRequest, err.Error(), nil)

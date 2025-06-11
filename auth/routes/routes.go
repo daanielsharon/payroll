@@ -5,10 +5,12 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
+	"shared/router"
 )
 
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
-	router := chi.NewRouter()
+	router := router.NewBaseRouter()
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

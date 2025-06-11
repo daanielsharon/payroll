@@ -11,6 +11,21 @@ import (
 	"time"
 )
 
+type ResponseWrapper[T any] struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Data    T      `json:"data"`
+}
+
+func DecodeResponse[T any](resp *http.Response) (*ResponseWrapper[T], error) {
+	defer resp.Body.Close()
+	var wrapper ResponseWrapper[T]
+	if err := json.NewDecoder(resp.Body).Decode(&wrapper); err != nil {
+		return nil, err
+	}
+	return &wrapper, nil
+}
+
 type Client struct {
 	services   map[string]string
 	httpClient *http.Client
@@ -25,40 +40,45 @@ func NewWithServices() *Client {
 	}
 }
 
-func (c *Client) Do(ctx context.Context, serviceName, method, path string, in, out any) error {
+func (c *Client) DoRaw(ctx context.Context, serviceName, method, path string, in any) (*http.Response, error) {
 	baseURL, ok := c.services[serviceName]
 	if !ok {
-		return errors.New("Unregistered service: " + serviceName)
+		return nil, errors.New("unregistered service: " + serviceName)
 	}
 
 	var body io.Reader
 	if in != nil {
 		b, err := json.Marshal(in)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		body = bytes.NewBuffer(b)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, method, baseURL+path, body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return errors.New("[" + serviceName + "] " + resp.Status)
+		errMsg := "[" + serviceName + "] " + resp.Status
+		resp.Body.Close()
+		return nil, errors.New(errMsg)
 	}
 
-	if out != nil {
-		return json.NewDecoder(resp.Body).Decode(out)
-	}
+	return resp, nil
+}
 
-	return nil
+func DoAndDecode[T any](c *Client, ctx context.Context, serviceName, method, path string, in any) (*ResponseWrapper[T], error) {
+	resp, err := c.DoRaw(ctx, serviceName, method, path, in)
+	if err != nil {
+		return nil, err
+	}
+	return DecodeResponse[T](resp)
 }

@@ -18,7 +18,7 @@ func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 		w.Write([]byte(`{"message": "Hello from User Service"}`))
 	})
 
-	router.Post("/user", handler.GetUserByUsername)
+	router.Get("/user", handler.GetUserByUsername)
 
 	return router
 }

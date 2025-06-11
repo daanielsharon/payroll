@@ -13,5 +13,14 @@ GET http://localhost:8080/overtime/
 ### Auth
 GET http://localhost:8080/auth/
 
+### Auth login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "username": "user_t8x7il",
+    "password": "password123"
+}
+
 ### User
 GET http://localhost:8080/user/

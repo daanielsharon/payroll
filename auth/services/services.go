@@ -23,17 +23,16 @@ func (s *Service) Login(username string, password string) (map[string]any, error
 		return nil, errors.New("username or password is empty")
 	}
 
-	var user models.User
-	err := s.client.Do(context.Background(), "user", "GET", "/user?username="+username, nil, user)
+	result, err := httphelper.DoAndDecode[models.User](s.client, context.Background(), "user", "GET", "/user?username="+username, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := utils.CheckPasswordHash(password, user.PasswordHash); err != nil {
-		return nil, errors.New("invalssid password")
+	if err := utils.CheckPasswordHash(password, result.Data.PasswordHash); err != nil {
+		return nil, errors.New("invalid password")
 	}
 
-	token, err := utils.GenerateJWT(user.ID.String(), user.Role)
+	token, err := utils.GenerateJWT(result.Data.ID.String(), result.Data.Role)
 	if err != nil {
 		return nil, err
 	}

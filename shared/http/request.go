@@ -11,6 +11,10 @@ func GetRouteParam(r *http.Request, key string) string {
 	return chi.URLParam(r, key)
 }
 
+func GetQueryParams(r *http.Request, key string) string {
+	return r.URL.Query().Get(key)
+}
+
 func DecodeJSON[T any](r *http.Request) (T, error) {
 	var body T
 	err := json.NewDecoder(r.Body).Decode(&body)

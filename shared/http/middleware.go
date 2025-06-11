@@ -46,16 +46,3 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-// func RequireRole(allowedRoles ...string) func(http.Handler) http.Handler {
-// 	return func(next http.Handler) http.Handler {
-// 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 			role := r.Context().Value(constant.ContextRole).(string)
-// 			if slices.Contains(allowedRoles, role) {
-// 				next.ServeHTTP(w, r)
-// 				return
-// 			}
-// 			http.Error(w, "Forbidden", http.StatusForbidden)
-// 		})
-// 	}
-// }
