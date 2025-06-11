@@ -1,11 +1,11 @@
 package app
 
 import (
+	"payroll/handlers"
+	"payroll/routes"
+	"payroll/services"
+	"payroll/storage"
 	"shared/db"
-	"user/handlers"
-	"user/routes"
-	"user/services"
-	"user/storage"
 
 	"github.com/go-chi/chi/v5"
 )

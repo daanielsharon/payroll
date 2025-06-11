@@ -1,10 +1,10 @@
 package httphelper
 
 import (
-	"context"
 	"net/http"
 	"shared/config"
 	"shared/constant"
+	shared_context "shared/context"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -21,7 +21,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")
 		if !strings.HasPrefix(auth, "Bearer ") {
-			http.Error(w, "Missing token", http.StatusUnauthorized)
+			JSONResponse(w, http.StatusUnauthorized, "Missing token", nil)
 			return
 		}
 
@@ -32,7 +32,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			JSONResponse(w, http.StatusUnauthorized, "Invalid token", nil)
 			return
 		}
 
@@ -40,9 +40,38 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		userID := claims["sub"].(string)
 		role := claims["role"].(string)
 
-		ctx := context.WithValue(r.Context(), constant.ContextUserID, userID)
-		ctx = context.WithValue(ctx, constant.ContextRole, role)
+		if userID == "" || role == "" {
+			JSONResponse(w, http.StatusUnauthorized, "Invalid token", nil)
+			return
+		}
+
+		ctx := shared_context.WithUserID(r.Context(), userID)
+		ctx = shared_context.WithRole(ctx, role)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func IsAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		role, _ := shared_context.GetRole(r.Context())
+		if role != constant.RoleAdmin {
+			JSONResponse(w, http.StatusUnauthorized, "User is not admin", nil)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func IsEmployee(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		role, _ := shared_context.GetRole(r.Context())
+		if role != constant.RoleEmployee {
+			JSONResponse(w, http.StatusUnauthorized, "User is not employee", nil)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

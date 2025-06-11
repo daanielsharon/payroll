@@ -1,9 +1,11 @@
 package db
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
+	"shared/constant"
 	"shared/models"
 	"shared/utils"
 
@@ -25,9 +27,9 @@ func seedUsers(db *gorm.DB, adminID uuid.UUID) error {
 	for i := 1; i <= 100; i++ {
 		user := models.User{
 			ID:           uuid.New(),
-			Username:     "user_" + randString(6),
+			Username:     fmt.Sprintf("%s_%s", constant.RoleEmployee, randString(6)),
 			PasswordHash: utils.HashPassword("password123"),
-			Role:         "user",
+			Role:         constant.RoleEmployee,
 			BaseSalary:   50000 + float64(i)*100,
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
@@ -44,9 +46,9 @@ func seedUsers(db *gorm.DB, adminID uuid.UUID) error {
 func seedAdmin(db *gorm.DB) (uuid.UUID, error) {
 	admin := models.User{
 		ID:           uuid.New(),
-		Username:     "admin_" + randString(6),
+		Username:     fmt.Sprintf("%s_%s", constant.RoleAdmin, randString(6)),
 		PasswordHash: utils.HashPassword("adminpass"),
-		Role:         "admin",
+		Role:         constant.RoleAdmin,
 		BaseSalary:   0,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),

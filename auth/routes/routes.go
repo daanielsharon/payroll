@@ -10,15 +10,15 @@ import (
 )
 
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
-	router := router.NewBaseRouter()
+	r := router.NewBaseRouter()
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"message": "Hello from Auth Service"}`))
 	})
 
-	router.Post("/login", handler.Login)
+	r.Post("/login", handler.Login)
 
-	return router
+	return r
 }

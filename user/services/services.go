@@ -1,9 +1,9 @@
 package services
 
 import (
-	"auth/storage"
 	"errors"
 	"shared/models"
+	"user/storage"
 )
 
 type Service struct {
@@ -20,6 +20,10 @@ func (s *Service) GetUserByUsername(username string) (*models.User, error) {
 	}
 
 	user, err := s.storage.GetUserByUsername(username)
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
 	if err != nil {
 		return nil, err
 	}

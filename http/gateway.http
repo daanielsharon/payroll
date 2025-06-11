@@ -13,14 +13,27 @@ GET http://localhost:8080/overtime/
 ### Auth
 GET http://localhost:8080/auth/
 
-### Auth login
+### Auth employee login
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-    "username": "user_t8x7il",
+    "username": "employee_6c5tu0",
     "password": "password123"
 }
+
+### Auth admin login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "username": "admin_srsec5",
+    "password": "adminpass"
+}
+
+### Payroll run
+POST http://localhost:8080/payroll/run
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk2NTAxMjMsInJvbGUiOiJhZG1pbiIsInN1YiI6IjVmMzI2Njg4LTI5ZDAtNDQwMy04MzI2LWM1YWFhYzNkOTFhYSJ9.7TeYhm4FNP2JIgpnsWl6EdhJt4giI6LgLnOo5Yn6MNA
 
 ### User
 GET http://localhost:8080/user/

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"auth/app"
 	"fmt"
 	"log"
 	"net/http"
 	"shared/config"
+	"user/app"
 )
 
 func main() {

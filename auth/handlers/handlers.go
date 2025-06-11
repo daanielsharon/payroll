@@ -25,9 +25,9 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&credentials)
 	token, err := h.services.Login(credentials.Username, credentials.Password)
 	if err != nil {
-		httphelper.JSONResponse(w, http.StatusBadRequest, err.Error(), nil)
+		httphelper.JSONResponse(w, http.StatusBadRequest, "user not found", nil)
 		return
 	}
 
-	httphelper.JSONResponse(w, http.StatusOK, "login successful", token)
+	httphelper.JSONResponse(w, http.StatusOK, "Login Successful", token)
 }

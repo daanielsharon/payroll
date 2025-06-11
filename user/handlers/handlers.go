@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"auth/services"
 	"net/http"
+	"user/services"
 
 	httphelper "shared/http"
 )

@@ -8,14 +8,14 @@ import (
 )
 
 type AuditLog struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	TableName   string         `gorm:"size:50;not null;index"`
-	RecordID    uuid.UUID      `gorm:"type:uuid;not null;index"`
-	Action      string         `gorm:"size:20;not null;check:action IN ('create', 'update', 'delete')"`
-	PerformedBy uuid.UUID      `gorm:"type:uuid;not null"`
-	IPAddress   string         `gorm:"type:inet"`
-	RequestID   uuid.UUID      `gorm:"type:uuid;index"`
-	OldData     datatypes.JSON `gorm:"type:jsonb"`
-	NewData     datatypes.JSON `gorm:"type:jsonb"`
-	CreatedAt   time.Time      `gorm:"autoCreateTime"`
+	ID          uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
+	TableName   string         `gorm:"size:50;not null;index" json:"table_name"`
+	RecordID    uuid.UUID      `gorm:"type:uuid;not null;index" json:"record_id"`
+	Action      string         `gorm:"size:20;not null;check:action IN ('create', 'update', 'delete')" json:"action"`
+	PerformedBy uuid.UUID      `gorm:"type:uuid;not null" json:"performed_by"`
+	IPAddress   string         `gorm:"type:inet" json:"ip_address"`
+	RequestID   uuid.UUID      `gorm:"type:uuid;index" json:"request_id"`
+	OldData     datatypes.JSON `gorm:"type:jsonb" json:"old_data"`
+	NewData     datatypes.JSON `gorm:"type:jsonb" json:"new_data"`
+	CreatedAt   time.Time      `gorm:"autoCreateTime" json:"created_at"`
 }
