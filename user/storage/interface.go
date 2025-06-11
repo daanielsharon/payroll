@@ -1,7 +1,10 @@
 package storage
 
-import "shared/models"
+import (
+	"context"
+	"shared/models"
+)
 
 type Storage interface {
-	GetUserByUsername(username string) (*models.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 }

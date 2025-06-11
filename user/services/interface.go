@@ -1,7 +1,10 @@
 package services
 
-import "shared/models"
+import (
+	"context"
+	"shared/models"
+)
 
 type ServiceInterface interface {
-	GetUserByUsername(username string) (*models.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 }

@@ -1,5 +1,7 @@
 package services
 
+import "context"
+
 type ServiceInterface interface {
-	Login(username string, password string) (map[string]any, error)
+	Login(ctx context.Context, username, password string) (map[string]any, error)
 }

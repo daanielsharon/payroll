@@ -1,6 +1,9 @@
 package httphelper
 
-import "shared/config"
+import (
+	"shared/config"
+	"shared/constant"
+)
 
 type Server struct {
 	Name   string
@@ -13,32 +16,32 @@ func RegisteredServers(cfg config.ApplicationConfig) []Server {
 	host := server.Host
 	return []Server{
 		{
-			Name:   "payroll",
+			Name:   constant.ServicePayroll,
 			Port:   server.PayrollPort,
 			Target: "http://" + host + ":" + server.PayrollPort,
 		},
 		{
-			Name:   "overtime",
+			Name:   constant.ServiceOvertime,
 			Port:   server.OvertimePort,
 			Target: "http://" + host + ":" + server.OvertimePort,
 		},
 		{
-			Name:   "attendance",
+			Name:   constant.ServiceAttendance,
 			Port:   server.AttendancePort,
 			Target: "http://" + host + ":" + server.AttendancePort,
 		},
 		{
-			Name:   "reimbursement",
+			Name:   constant.ServiceReimbursement,
 			Port:   server.ReimbursementPort,
 			Target: "http://" + host + ":" + server.ReimbursementPort,
 		},
 		{
-			Name:   "auth",
+			Name:   constant.ServiceAuth,
 			Port:   server.AuthPort,
 			Target: "http://" + host + ":" + server.AuthPort,
 		},
 		{
-			Name:   "user",
+			Name:   constant.ServiceUser,
 			Port:   server.UserPort,
 			Target: "http://" + host + ":" + server.UserPort,
 		},

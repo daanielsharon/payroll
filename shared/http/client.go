@@ -9,6 +9,9 @@ import (
 	"net/http"
 	"shared/config"
 	"time"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 type ResponseWrapper[T any] struct {
@@ -60,6 +63,8 @@ func (c *Client) DoRaw(ctx context.Context, serviceName, method, path string, in
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
+	// 👇 Inject the OTel context into the outgoing HTTP headers
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {

@@ -5,12 +5,15 @@ import (
 	"user/handlers"
 
 	"github.com/go-chi/chi/v5"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
+	"shared/constant"
 	"shared/router"
 )
 
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 	r := router.NewBaseRouter()
+	r.Use(otelhttp.NewMiddleware(constant.ServiceUser))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

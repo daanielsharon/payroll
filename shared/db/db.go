@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 var DB *gorm.DB
@@ -28,6 +29,9 @@ func Connect() *gorm.DB {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
+	if err := DB.Use(tracing.NewPlugin()); err != nil {
+		panic(err)
+	}
 	log.Println("Database connection established")
 	return DB
 }
