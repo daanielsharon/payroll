@@ -5,16 +5,11 @@ import (
 	"time"
 
 	"shared/models"
+	"shared/utils"
 
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
-
-func hashPassword(password string) string {
-	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(hash)
-}
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyz0123456789"
 
@@ -31,7 +26,7 @@ func seedUsers(db *gorm.DB, adminID uuid.UUID) error {
 		user := models.User{
 			ID:           uuid.New(),
 			Username:     "user_" + randString(6),
-			PasswordHash: hashPassword("password123"),
+			PasswordHash: utils.HashPassword("password123"),
 			Role:         "user",
 			BaseSalary:   50000 + float64(i)*100,
 			CreatedAt:    time.Now(),
@@ -50,7 +45,7 @@ func seedAdmin(db *gorm.DB) (uuid.UUID, error) {
 	admin := models.User{
 		ID:           uuid.New(),
 		Username:     "admin_" + randString(6),
-		PasswordHash: hashPassword("adminpass"),
+		PasswordHash: utils.HashPassword("adminpass"),
 		Role:         "admin",
 		BaseSalary:   0,
 		CreatedAt:    time.Now(),

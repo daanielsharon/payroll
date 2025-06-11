@@ -22,12 +22,15 @@ type Server struct {
 	OvertimePort      string
 	AttendancePort    string
 	ReimbursementPort string
+	AuthPort          string
+	UserPort          string
 	GatewayPort       string
 }
 
 type ApplicationConfig struct {
-	DB     DB
-	Server Server
+	DB        DB
+	Server    Server
+	JWTSecret string
 }
 
 func LoadConfig() ApplicationConfig {
@@ -51,7 +54,10 @@ func LoadConfig() ApplicationConfig {
 			OvertimePort:      os.Getenv("OVERTIME_PORT"),
 			AttendancePort:    os.Getenv("ATTENDANCE_PORT"),
 			ReimbursementPort: os.Getenv("REIMBURSEMENT_PORT"),
+			AuthPort:          os.Getenv("AUTH_PORT"),
+			UserPort:          os.Getenv("USER_PORT"),
 			GatewayPort:       os.Getenv("GATEWAY_PORT"),
 		},
+		JWTSecret: os.Getenv("JWT_SECRET"),
 	}
 }
