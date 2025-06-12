@@ -1,24 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-
+	"overtime/app"
 	"shared/config"
-	"shared/router"
+	"shared/constant"
+	"shared/tracing"
 )
 
 func main() {
-	r := router.NewBaseRouter()
+	tracing.MustInit(constant.ServiceOvertime)
+	defer tracing.Shutdown()
+
+	r := app.New()
 	config := config.LoadConfig()
+	port := fmt.Sprintf(":%s", config.Server.OvertimePort)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message": "Hello from Overtime Service"}`))
-	})
-
-	port := config.Server.OvertimePort
 	log.Printf("Overtime service starting on port %s", port)
-	http.ListenAndServe(":"+port, r)
+	http.ListenAndServe(port, r)
 }

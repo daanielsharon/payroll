@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"shared/config"
+	shared_context "shared/context"
 	"time"
 
 	"go.opentelemetry.io/otel"
@@ -63,6 +64,12 @@ func (c *Client) DoRaw(ctx context.Context, serviceName, method, path string, in
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
+
+	token, _ := shared_context.GetToken(ctx)
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+
 	// 👇 Inject the OTel context into the outgoing HTTP headers
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 

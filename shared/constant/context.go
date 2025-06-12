@@ -8,4 +8,5 @@ const (
 	ContextIPAddress contextKey = "ipAddress"
 	ContextRequestID contextKey = "requestID"
 	ContextTraceID   contextKey = "traceID"
+	ContextToken     contextKey = "token"
 )

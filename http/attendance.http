@@ -1,6 +1,11 @@
 GET http://localhost:8083/
 
-### Attendance
-POST http://localhost:8083/attend
+### Submit
+POST http://localhost:8083/submit
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTM3NzgsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjgxMWVkZmQ0LWUyZjItNGIzMi1iZDBiLTI3MzQzZTNlZjc3MSJ9.iGiaWeL-9aAfTbJ2KOhbPO9hgBTgAWtlId8JzUhfrxg
+
+### Attendance
+GET http://localhost:8083/attendance?date=2025-06-12
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8

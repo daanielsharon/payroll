@@ -20,6 +20,20 @@ func NewStorage(db *gorm.DB) Storage {
 	return &DB{DB: db}
 }
 
+func (s *DB) GetAttendanceByUserIdAndDate(ctx context.Context, date time.Time) *models.Attendance {
+	var attendance models.Attendance
+
+	userID, _ := shared_context.GetUserID(ctx)
+
+	data := s.DB.WithContext(ctx).First(&attendance, "user_id = ? AND date = ?", userID, date)
+
+	if data.Error != nil {
+		return nil
+	}
+
+	return &attendance
+}
+
 func (s *DB) GetAttendanceByUserId(ctx context.Context) *models.Attendance {
 	var attendance models.Attendance
 

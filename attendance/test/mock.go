@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"shared/models"
+	"time"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -13,6 +14,14 @@ type MockStorage struct {
 
 func (m *MockStorage) GetAttendanceByUserId(ctx context.Context) *models.Attendance {
 	args := m.Called(ctx)
+	if att := args.Get(0); att != nil {
+		return att.(*models.Attendance)
+	}
+	return nil
+}
+
+func (m *MockStorage) GetAttendanceByUserIdAndDate(ctx context.Context, date time.Time) *models.Attendance {
+	args := m.Called(ctx, date)
 	if att := args.Get(0); att != nil {
 		return att.(*models.Attendance)
 	}

@@ -1,1 +1,12 @@
 GET http://localhost:8082/
+
+### Overtime
+POST http://localhost:8082/submit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
+
+{
+    "date": "2025-06-12",
+    "hours": 2.5
+}
+    

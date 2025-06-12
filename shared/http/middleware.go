@@ -49,6 +49,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		ctx := shared_context.WithUserID(r.Context(), userID)
 		ctx = shared_context.WithRole(ctx, role)
+		ctx = shared_context.WithToken(ctx, tokenStr)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

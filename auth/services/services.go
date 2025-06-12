@@ -32,7 +32,7 @@ func (s *Service) Login(ctx context.Context, username, password string) (map[str
 	}
 
 	span.AddEvent("Checking user")
-	result, err := httphelper.DoAndDecode[models.User](s.client, ctx, "user", "GET", "/user?username="+username, nil)
+	result, err := httphelper.DoAndDecode[models.User](s.client, ctx, constant.ServiceUser, "GET", "/user?username="+username, nil)
 	if err != nil {
 		return nil, err
 	}

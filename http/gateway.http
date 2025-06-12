@@ -32,11 +32,19 @@ Content-Type: application/json
 }
 
 ### Attendance 
-POST http://localhost:8080/attendance/attend
+POST http://localhost:8080/attendance/submit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTYxNjYsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.d8OpBQ_g3YWZDgLnABZ9MmMwvppwwUK_YGPlLw5AyDM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
 
+### Overtime 
+POST http://localhost:8080/overtime/submit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
 
+{
+    "date": "2025-06-12",
+    "hours": 2.5
+}
 
 ### Payroll run
 POST http://localhost:8080/payroll/run

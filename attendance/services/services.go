@@ -23,6 +23,14 @@ func NewService(storage storage.Storage, nowFunc func() time.Time) ServiceInterf
 	return &Service{storage: storage, NowFunc: nowFunc}
 }
 
+func (s *Service) GetAttendanceByUserIdAndDate(ctx context.Context, date time.Time) *models.Attendance {
+	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
+	ctx, span := tracer.Start(ctx, "GetAttendanceByUserIdAndDate Service")
+	defer span.End()
+
+	return s.storage.GetAttendanceByUserIdAndDate(ctx, date)
+}
+
 func (s *Service) GetAttendanceByUserId(ctx context.Context) *models.Attendance {
 	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
 	ctx, span := tracer.Start(ctx, "GetAttendanceByUserId Service")
