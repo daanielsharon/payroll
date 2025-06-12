@@ -3,6 +3,7 @@ package services
 import (
 	"attendance/storage"
 	"context"
+	"encoding/json"
 	"fmt"
 	"shared/constant"
 	"shared/models"
@@ -41,15 +42,15 @@ func (s *Service) Attend(ctx context.Context) error {
 	}
 
 	span.AddEvent("Clocking out")
-	return s.clockIn(ctx)
+	return s.clockIn(ctx, nil)
 }
 
-func (s *Service) clockIn(ctx context.Context) error {
+func (s *Service) clockIn(ctx context.Context, previousAttendance *models.Attendance) error {
 	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
 	ctx, span := tracer.Start(ctx, "clockIn Service")
 	defer span.End()
 
-	err := s.storage.ClockIn(ctx, time.Now())
+	err := s.storage.ClockIn(ctx)
 	if err != nil {
 		return err
 	}
@@ -59,11 +60,18 @@ func (s *Service) clockIn(ctx context.Context) error {
 }
 
 func (s *Service) clockOut(ctx context.Context, previousAttendance *models.Attendance) error {
+	now := time.Now()
 	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
 	ctx, span := tracer.Start(ctx, "clockOut Service")
 	defer span.End()
 
 	hours_worked := time.Since(*previousAttendance.ClockInAt).Hours()
 	span.AddEvent("Clocking out")
-	return s.storage.ClockOut(ctx, hours_worked, time.Now())
+
+	data, _ := json.Marshal(previousAttendance)
+	previousAttendance.OldDataJSON = data
+
+	previousAttendance.ClockOutAt = &now
+	previousAttendance.HoursWorked = &hours_worked
+	return s.storage.ClockOut(ctx, previousAttendance)
 }

@@ -33,14 +33,16 @@ func (s *DB) GetAttendanceByUserId(ctx context.Context) *models.Attendance {
 	return &attendance
 }
 
-func (s *DB) ClockIn(ctx context.Context, time time.Time) error {
+func (s *DB) ClockIn(ctx context.Context) error {
 	userId, _ := shared_context.GetUserID(ctx)
 	fmt.Println("user id", userId)
 	uId, _ := utils.ParseUUID(userId)
+	now := time.Now()
+
 	data := s.DB.WithContext(ctx).Create(&models.Attendance{
 		UserID:    uId,
-		Date:      time,
-		ClockInAt: &time,
+		Date:      now,
+		ClockInAt: &now,
 	})
 
 	if data.Error != nil {
@@ -50,19 +52,7 @@ func (s *DB) ClockIn(ctx context.Context, time time.Time) error {
 	return nil
 }
 
-func (s *DB) ClockOut(ctx context.Context, hours_worked float64, time time.Time) error {
-	userId, _ := shared_context.GetUserID(ctx)
-	data := s.DB.WithContext(ctx).
-		Model(&models.Attendance{}).
-		Where("user_id = ? AND date = ?", userId, time).
-		Updates(&models.Attendance{
-			ClockOutAt:  &time,
-			HoursWorked: &hours_worked,
-		})
-
-	if data.Error != nil {
-		return data.Error
-	}
-
-	return nil
+func (s *DB) ClockOut(ctx context.Context, previousAttendance *models.Attendance) error {
+	return s.DB.WithContext(ctx).
+		Save(previousAttendance).Error
 }

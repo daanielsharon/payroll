@@ -15,6 +15,7 @@ import (
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 	r := router.NewBaseRouter()
 	r.Use(otelhttp.NewMiddleware(constant.ServiceAttendance))
+	r.Use(httphelper.RequestMiddleware)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		httphelper.JSONResponse(w, http.StatusOK, "Hello from Attendance Service", nil)
