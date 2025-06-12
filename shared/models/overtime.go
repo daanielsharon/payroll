@@ -54,6 +54,7 @@ func (o *Overtime) GetNewData() datatypes.JSON {
 func (o *Overtime) BeforeCreate(tx *gorm.DB) (err error) {
 	userID := tx.Statement.Context.Value(constant.ContextUserID).(string)
 	uId, _ := utils.ParseUUID(userID)
+	o.UserID = uId
 	o.CreatedBy = uId
 	o.ID = utils.GenerateUUID()
 	return nil

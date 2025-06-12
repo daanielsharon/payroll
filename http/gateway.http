@@ -46,6 +46,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4M
     "hours": 2.5
 }
 
+### Reimbursement
+POST http://localhost:8080/reimbursement/submit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
+
+{
+    "amount": 100000,
+    "description": "Reimbursement for travel"
+}
+
 ### Payroll run
 POST http://localhost:8080/payroll/run
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTM3NDAsInJvbGUiOiJhZG1pbiIsInN1YiI6IjkxMjJkM2ZhLWZmYmItNGY3Zi04OGIxLTdjNGY0ZDUxYTI1YSJ9.8z9HOUNUu35bFbircr3LPNBfJjxk2zBGn4jKRMOFGco

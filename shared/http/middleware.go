@@ -6,6 +6,7 @@ import (
 	"shared/config"
 	"shared/constant"
 	shared_context "shared/context"
+	"shared/utils"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -60,7 +61,14 @@ func RequestMiddleware(next http.Handler) http.Handler {
 		ctx := r.Context()
 
 		ip := r.Header.Get("X-Forwarded-For")
+		if ip == "" {
+			ip = strings.Split(r.RemoteAddr, ":")[0]
+		}
+
 		requestID := r.Header.Get("X-Request-ID")
+		if requestID == "" {
+			requestID = utils.GenerateRandomUUIDString()
+		}
 		spanCtx := trace.SpanContextFromContext(ctx)
 		traceID := ""
 		if spanCtx.HasTraceID() {

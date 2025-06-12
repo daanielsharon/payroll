@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"overtime/services"
 	"shared/constant"
@@ -31,7 +30,6 @@ func (h *Handler) Submit(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&overtimeRequest)
 	if err != nil {
 		span.AddEvent("Invalid overtime data")
-		log.Println("Invalid overtime data", err)
 		httphelper.JSONResponse(w, http.StatusBadRequest, "Invalid overtime data", nil)
 		return
 	}
@@ -39,7 +37,6 @@ func (h *Handler) Submit(w http.ResponseWriter, r *http.Request) {
 	overtimeDate, err := time.Parse("2006-01-02", overtimeRequest.Date)
 	if err != nil {
 		span.AddEvent("Invalid overtime date")
-		log.Println("Invalid overtime date", err)
 		httphelper.JSONResponse(w, http.StatusBadRequest, "Invalid overtime date", nil)
 		return
 	}
@@ -50,11 +47,10 @@ func (h *Handler) Submit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.services.Submit(ctx, filteredOvertime)
-	fmt.Println("err", err)
 	if err != nil {
 		httphelper.JSONResponse(w, http.StatusInternalServerError, "Overtime run failed", nil)
 		return
 	}
 
-	httphelper.JSONResponse(w, http.StatusOK, "Overtime run successful", nil)
+	httphelper.JSONResponse(w, http.StatusOK, "Overtime run successful", overtimeRequest)
 }
