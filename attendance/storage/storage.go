@@ -70,3 +70,22 @@ func (s *DB) ClockOut(ctx context.Context, previousAttendance *models.Attendance
 	return s.DB.WithContext(ctx).
 		Save(previousAttendance).Error
 }
+
+func (s *DB) GetAttendanceByDate(ctx context.Context, startDate, endDate time.Time) []models.Attendance {
+	var attendance []models.Attendance
+
+	data := s.DB.WithContext(ctx).
+		Where("date BETWEEN ? AND ?", startDate, endDate).
+		Find(&attendance)
+
+	if data.Error != nil {
+		return nil
+	}
+
+	return attendance
+}
+
+func (s *DB) UpdatePayroll(ctx context.Context, attendance models.Attendance) error {
+	return s.DB.WithContext(ctx).
+		Save(&attendance).Error
+}

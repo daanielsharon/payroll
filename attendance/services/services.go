@@ -11,6 +11,7 @@ import (
 	"shared/utils"
 	"time"
 
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 )
 
@@ -105,4 +106,33 @@ func (s *Service) ClockOut(ctx context.Context, previousAttendance *models.Atten
 	previousAttendance.ClockOutAt = &now
 	previousAttendance.HoursWorked = &hours_worked
 	return s.storage.ClockOut(ctx, previousAttendance)
+}
+
+func (s *Service) GetAttendanceByDate(ctx context.Context, startDate, endDate time.Time) []models.Attendance {
+	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
+	ctx, span := tracer.Start(ctx, "GetAttendanceByDate Service")
+	defer span.End()
+
+	return s.storage.GetAttendanceByDate(ctx, startDate, endDate)
+}
+
+func (s *Service) UpdateAttendancePayroll(ctx context.Context, startDate, endDate time.Time, payrollRunId uuid.UUID) error {
+	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceAttendance))
+	ctx, span := tracer.Start(ctx, "UpdateAttendancePayroll Service")
+	defer span.End()
+
+	attendance := s.GetAttendanceByDate(ctx, startDate, endDate)
+
+	if len(attendance) == 0 {
+		return errors.New("no attendance found")
+	}
+
+	for _, att := range attendance {
+		att.PayrollRunID = &payrollRunId
+		s.storage.UpdatePayroll(ctx, att)
+	}
+
+	span.AddEvent("Updating payroll")
+
+	return nil
 }

@@ -10,7 +10,9 @@ import (
 	httphelper "shared/http"
 	"shared/models"
 	"shared/utils"
+	"time"
 
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 )
 
@@ -52,4 +54,32 @@ func (s *Service) Submit(ctx context.Context, overtime models.Overtime) error {
 	}
 
 	return s.storage.Submit(ctx, overtime)
+}
+
+func (s *Service) GetOvertimeByDate(ctx context.Context, startDate, endDate time.Time) []models.Overtime {
+	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceOvertime))
+	ctx, span := tracer.Start(ctx, "GetOvertimeByDate Service")
+	defer span.End()
+
+	return s.storage.GetOvertimeByDate(ctx, startDate, endDate)
+}
+
+func (s *Service) UpdateOvertimePayroll(ctx context.Context, startDate, endDate time.Time, payrollRunId uuid.UUID) error {
+	tracer := otel.Tracer(fmt.Sprintf("%s/service", constant.ServiceOvertime))
+	ctx, span := tracer.Start(ctx, "UpdateOvertimePayroll Service")
+	defer span.End()
+
+	overtime := s.GetOvertimeByDate(ctx, startDate, endDate)
+	if len(overtime) == 0 {
+		return errors.New("no overtime found")
+	}
+
+	span.AddEvent("Updating payroll")
+
+	for _, ot := range overtime {
+		ot.PayrollRunID = &payrollRunId
+		s.storage.UpdatePayroll(ctx, ot)
+	}
+
+	return nil
 }

@@ -3,11 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"reimbursement/services"
 	"shared/constant"
 	httphelper "shared/http"
 	"shared/models"
+	"shared/utils"
 
 	"go.opentelemetry.io/otel"
 )
@@ -44,4 +46,29 @@ func (h *Handler) Submit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httphelper.JSONResponse(w, http.StatusOK, "Reimbursement run successful", reimbursementRequest)
+}
+
+func (h *Handler) UpdateReimbursementPayroll(w http.ResponseWriter, r *http.Request) {
+	tracer := otel.Tracer(fmt.Sprintf("%s/handler", constant.ServiceReimbursement))
+	ctx, span := tracer.Start(r.Context(), "UpdateReimbursementPayroll Handler")
+	defer span.End()
+
+	startDate := httphelper.GetQueryParams(r, "startDate")
+	endDate := httphelper.GetQueryParams(r, "endDate")
+	payrollRunId := httphelper.GetQueryParams(r, "payrollRunId")
+
+	startDateParsed := utils.ConvertStringToDate(startDate)
+	endDateParsed := utils.ConvertStringToDate(endDate)
+	payrollRunIdParsed, _ := utils.ParseUUID(payrollRunId)
+
+	span.AddEvent("Updating payroll")
+	err := h.services.UpdateReimbursementPayroll(ctx, startDateParsed, endDateParsed, payrollRunIdParsed)
+	if err != nil {
+		httphelper.JSONResponse(w, http.StatusInternalServerError, "Reimbursement payroll update failed", nil)
+
+		log.Println("Reimbursement payroll update failed", err)
+		return
+	}
+
+	httphelper.JSONResponse(w, http.StatusOK, "Reimbursement payroll update successful", nil)
 }

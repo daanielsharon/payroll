@@ -64,3 +64,16 @@ func (o *Overtime) AfterCreate(tx *gorm.DB) (err error) {
 	audit.CreateLog(tx, constant.Create, o)
 	return nil
 }
+
+func (o *Overtime) BeforeUpdate(tx *gorm.DB) (err error) {
+	userID := tx.Statement.Context.Value(constant.ContextUserID).(string)
+	uId, _ := utils.ParseUUID(userID)
+
+	o.UpdatedBy = &uId
+	return nil
+}
+
+func (o *Overtime) AfterUpdate(tx *gorm.DB) (err error) {
+	audit.CreateLog(tx, constant.Update, o)
+	return nil
+}

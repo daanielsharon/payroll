@@ -3,5 +3,14 @@ package handlers
 import "net/http"
 
 type HandlerInterface interface {
-	Run(w http.ResponseWriter, r *http.Request)
+	PayloadPeriodHandlerInterface
+	PayloadRunHandlerInterface
+}
+
+type PayloadPeriodHandlerInterface interface {
+	CreatePayrollPeriod(w http.ResponseWriter, r *http.Request)
+}
+
+type PayloadRunHandlerInterface interface {
+	CreatePayrollRun(w http.ResponseWriter, r *http.Request)
 }

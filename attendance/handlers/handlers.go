@@ -55,3 +55,28 @@ func (h *Handler) GetAttendanceByUserIdAndDate(w http.ResponseWriter, r *http.Re
 
 	httphelper.JSONResponse(w, http.StatusOK, "Attendance found", attendance)
 }
+
+func (h *Handler) UpdateAttendancePayroll(w http.ResponseWriter, r *http.Request) {
+	tracer := otel.Tracer(fmt.Sprintf("%s/handler", constant.ServiceAttendance))
+	ctx, span := tracer.Start(r.Context(), "UpdateAttendancePayroll Handler")
+	defer span.End()
+
+	startDate := httphelper.GetQueryParams(r, "startDate")
+	endDate := httphelper.GetQueryParams(r, "endDate")
+	payrollRunId := httphelper.GetQueryParams(r, "payrollRunId")
+
+	startDateParsed := utils.ConvertStringToDate(startDate)
+	endDateParsed := utils.ConvertStringToDate(endDate)
+	payrollRunIdParsed, _ := utils.ParseUUID(payrollRunId)
+
+	span.AddEvent("Updating payroll")
+	err := h.services.UpdateAttendancePayroll(ctx, startDateParsed, endDateParsed, payrollRunIdParsed)
+	if err != nil {
+		httphelper.JSONResponse(w, http.StatusInternalServerError, "Attendance payroll update failed", nil)
+
+		log.Println("Attendance payroll update failed", err)
+		return
+	}
+
+	httphelper.JSONResponse(w, http.StatusOK, "Attendance payroll update successful", nil)
+}

@@ -19,7 +19,7 @@ func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 
 	r.Group(func(r chi.Router) {
 		r.Use(httphelper.AuthMiddleware)
-		r.With(httphelper.IsAdmin).Post("/run", handler.Run)
+		r.With(httphelper.IsAdmin).Post("/run", handler.CreatePayrollRun)
 	})
 
 	return r

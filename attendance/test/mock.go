@@ -28,6 +28,19 @@ func (m *MockStorage) GetAttendanceByUserIdAndDate(ctx context.Context, date tim
 	return nil
 }
 
+func (m *MockStorage) GetAttendanceByDate(ctx context.Context, startDate, endDate time.Time) []models.Attendance {
+	args := m.Called(ctx, startDate, endDate)
+	if att := args.Get(0); att != nil {
+		return att.([]models.Attendance)
+	}
+	return nil
+}
+
+func (m *MockStorage) UpdatePayroll(ctx context.Context, attendance models.Attendance) error {
+	args := m.Called(ctx, attendance)
+	return args.Error(0)
+}
+
 func (m *MockStorage) ClockIn(ctx context.Context) error {
 	args := m.Called(ctx)
 	return args.Error(0)
