@@ -26,15 +26,15 @@ func randString(n int) string {
 func seedUsers(db *gorm.DB, adminID uuid.UUID) error {
 	for i := 1; i <= 100; i++ {
 		user := models.User{
-			ID:           uuid.New(),
+			ID:           utils.GenerateUUID(),
 			Username:     fmt.Sprintf("%s_%s", constant.RoleEmployee, randString(6)),
 			PasswordHash: utils.HashPassword("password123"),
 			Role:         constant.RoleEmployee,
 			BaseSalary:   50000 + float64(i)*100,
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
-			CreatedBy:    adminID,
-			UpdatedBy:    adminID,
+			CreatedBy:    &adminID,
+			UpdatedBy:    nil,
 		}
 		if err := db.Create(&user); err.Error != nil {
 			return err.Error
@@ -44,16 +44,17 @@ func seedUsers(db *gorm.DB, adminID uuid.UUID) error {
 }
 
 func seedAdmin(db *gorm.DB) (uuid.UUID, error) {
+	adminID := utils.GenerateUUID()
 	admin := models.User{
-		ID:           uuid.New(),
+		ID:           utils.GenerateUUID(),
 		Username:     fmt.Sprintf("%s_%s", constant.RoleAdmin, randString(6)),
 		PasswordHash: utils.HashPassword("adminpass"),
 		Role:         constant.RoleAdmin,
 		BaseSalary:   0,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
-		CreatedBy:    uuid.Nil,
-		UpdatedBy:    uuid.Nil,
+		CreatedBy:    &adminID,
+		UpdatedBy:    nil,
 	}
 	if err := db.Create(&admin); err.Error != nil {
 		return uuid.Nil, err.Error

@@ -1,6 +1,7 @@
 package httphelper
 
 import (
+	"context"
 	"net/http"
 	"shared/config"
 	"shared/constant"
@@ -8,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func JSONContentType(next http.Handler) http.Handler {
@@ -49,6 +51,36 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx = shared_context.WithRole(ctx, role)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func RequestMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
+		ip := r.Header.Get("X-Forwarded-For")
+		requestID := r.Header.Get("X-Request-ID")
+		spanCtx := trace.SpanContextFromContext(ctx)
+		traceID := ""
+		if spanCtx.HasTraceID() {
+			traceID = spanCtx.TraceID().String()
+		}
+
+		ctx = context.WithValue(ctx, constant.ContextIPAddress, ip)
+		ctx = context.WithValue(ctx, constant.ContextRequestID, requestID)
+		ctx = context.WithValue(ctx, constant.ContextTraceID, traceID)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func JSONOnly(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Content-Type") != "application/json" {
+			http.Error(w, "Unsupported Media Type. Only application/json is allowed", http.StatusUnsupportedMediaType)
+			return
+		}
+		next.ServeHTTP(w, r)
 	})
 }
 

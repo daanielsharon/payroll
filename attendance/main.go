@@ -1,23 +1,23 @@
 package main
 
 import (
+	"attendance/app"
 	"fmt"
 	"log"
 	"net/http"
 	"shared/config"
-	"shared/router"
+	"shared/constant"
+	"shared/tracing"
 )
 
 func main() {
-	r := router.NewBaseRouter()
+	tracing.MustInit(constant.ServiceAttendance)
+	defer tracing.Shutdown()
+
+	r := app.New()
 	config := config.LoadConfig()
 	port := fmt.Sprintf(":%s", config.Server.AttendancePort)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message": "Hello from Attendance Service"}`))
-	})
-
-	log.Printf("Attendance service starting on port %s", config.Server.AttendancePort)
+	log.Printf("Attendance service starting on port %s", port)
 	http.ListenAndServe(port, r)
 }

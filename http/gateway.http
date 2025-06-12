@@ -18,7 +18,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-    "username": "employee_6c5tu0",
+    "username": "employee_mjmsip",
     "password": "password123"
 }
 
@@ -27,13 +27,20 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-    "username": "admin_srsec5",
+    "username": "admin_rlyo94",
     "password": "adminpass"
 }
 
+### Attendance 
+POST http://localhost:8080/attendance/attend
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTYxNjYsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.d8OpBQ_g3YWZDgLnABZ9MmMwvppwwUK_YGPlLw5AyDM
+
+
+
 ### Payroll run
 POST http://localhost:8080/payroll/run
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk2NTAxMjMsInJvbGUiOiJhZG1pbiIsInN1YiI6IjVmMzI2Njg4LTI5ZDAtNDQwMy04MzI2LWM1YWFhYzNkOTFhYSJ9.7TeYhm4FNP2JIgpnsWl6EdhJt4giI6LgLnOo5Yn6MNA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTM3NDAsInJvbGUiOiJhZG1pbiIsInN1YiI6IjkxMjJkM2ZhLWZmYmItNGY3Zi04OGIxLTdjNGY0ZDUxYTI1YSJ9.8z9HOUNUu35bFbircr3LPNBfJjxk2zBGn4jKRMOFGco
 
 ### User
 GET http://localhost:8080/user/

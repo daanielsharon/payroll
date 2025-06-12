@@ -12,15 +12,15 @@ import (
 
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 	r := router.NewBaseRouter()
-	r.Use(httphelper.AuthMiddleware)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message": "Hello from Payroll Service"}`))
+		httphelper.JSONResponse(w, http.StatusOK, "Hello from Payroll Service", nil)
 	})
 
-	r.With(httphelper.IsAdmin).Post("/run", handler.Run)
+	r.Group(func(r chi.Router) {
+		r.Use(httphelper.AuthMiddleware)
+		r.With(httphelper.IsAdmin).Post("/run", handler.Run)
+	})
 
 	return r
 }

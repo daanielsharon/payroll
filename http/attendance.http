@@ -1,1 +1,6 @@
 GET http://localhost:8083/
+
+### Attendance
+POST http://localhost:8083/attend
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTM3NzgsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjgxMWVkZmQ0LWUyZjItNGIzMi1iZDBiLTI3MzQzZTNlZjc3MSJ9.iGiaWeL-9aAfTbJ2KOhbPO9hgBTgAWtlId8JzUhfrxg

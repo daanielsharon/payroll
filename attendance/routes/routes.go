@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"auth/handlers"
+	"attendance/handlers"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -14,15 +14,16 @@ import (
 
 func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 	r := router.NewBaseRouter()
-	r.Use(otelhttp.NewMiddleware(constant.ServiceAuth))
+	r.Use(otelhttp.NewMiddleware(constant.ServiceAttendance))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		httphelper.JSONResponse(w, http.StatusOK, "Hello from Auth Service", nil)
+		httphelper.JSONResponse(w, http.StatusOK, "Hello from Attendance Service", nil)
 	})
 
 	r.Group(func(r chi.Router) {
+		r.Use(httphelper.AuthMiddleware)
 		r.Use(httphelper.JSONOnly)
-		r.Post("/login", handler.Login)
+		r.With(httphelper.IsEmployee).Post("/attend", handler.Attendance)
 	})
 
 	return r

@@ -13,6 +13,7 @@ import (
 	httphelper "shared/http"
 	"shared/router"
 	"shared/tracing"
+	"shared/utils"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
@@ -26,6 +27,14 @@ func reverseProxy(target, name string) http.HandlerFunc {
 
 	originalDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
+		// Inject X-Forwarded-For
+		ip := strings.Split(req.RemoteAddr, ":")[0]
+		req.Header.Set("X-Forwarded-For", ip)
+
+		// Inject X-Request-ID
+		requestID := utils.GenerateRandomUUIDString()
+		req.Header.Set("X-Request-ID", requestID)
+
 		originalDirector(req) // keep default behavior
 
 		// Inject OTEL context so downstream services can continue the trace

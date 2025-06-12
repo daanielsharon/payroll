@@ -13,7 +13,8 @@ type PayrollRun struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 	CreatedBy uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
-	UpdatedBy uuid.UUID `gorm:"type:uuid;" json:"updated_by"`
+	UpdatedBy uuid.UUID `gorm:"type:uuid" json:"updated_by"`
 
-	Period PayrollPeriod `gorm:"foreignKey:PeriodID" json:"period"`
+	Period       PayrollPeriod `gorm:"foreignKey:PeriodID" json:"period"`
+	OriginalData *PayrollRun   `gorm:"-" json:"-"`
 }

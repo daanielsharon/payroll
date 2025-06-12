@@ -1,7 +1,9 @@
 package db
 
 import (
+	"shared/audit"
 	"shared/models"
+
 	"gorm.io/gorm"
 )
 
@@ -13,6 +15,6 @@ func Run(db *gorm.DB) error {
 		&models.Overtime{},
 		&models.PayrollPeriod{},
 		&models.PayrollRun{},
-		&models.AuditLog{},
+		&audit.Log{},
 	)
 }

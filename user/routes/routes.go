@@ -8,6 +8,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
 	"shared/constant"
+	httphelper "shared/http"
 	"shared/router"
 )
 
@@ -16,12 +17,13 @@ func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 	r.Use(otelhttp.NewMiddleware(constant.ServiceUser))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message": "Hello from User Service"}`))
+		httphelper.JSONResponse(w, http.StatusOK, "Hello from User Service", nil)
 	})
 
-	r.Get("/user", handler.GetUserByUsername)
+	r.Group(func(r chi.Router) {
+		r.Use(httphelper.JSONOnly)
+		r.Get("/user", handler.GetUserByUsername)
+	})
 
 	return r
 }

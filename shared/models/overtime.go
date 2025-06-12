@@ -15,8 +15,9 @@ type Overtime struct {
 	CreatedAt    time.Time  `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt    time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 	CreatedBy    uuid.UUID  `gorm:"type:uuid;not null" json:"created_by"`
-	UpdatedBy    uuid.UUID  `gorm:"type:uuid;not null" json:"updated_by"`
+	UpdatedBy    uuid.UUID  `gorm:"type:uuid" json:"updated_by"`
 
-	User       User       `gorm:"foreignKey:UserID" json:"user"`
-	PayrollRun PayrollRun `gorm:"foreignKey:PayrollRunID" json:"payroll_run"`
+	User         User       `gorm:"foreignKey:UserID" json:"user"`
+	PayrollRun   PayrollRun `gorm:"foreignKey:PayrollRunID" json:"payroll_run"`
+	OriginalData *Overtime  `gorm:"-" json:"-"`
 }
