@@ -30,7 +30,7 @@ func (s *DB) GetReimbursementByDate(ctx context.Context, startDate, endDate time
 	var reimbursement []models.Reimbursement
 
 	data := s.DB.WithContext(ctx).
-		Where("date BETWEEN ? AND ?", startDate, endDate).
+		Where("date BETWEEN ? AND ? AND payroll_run_id is null", startDate, endDate).
 		Find(&reimbursement)
 
 	if data.Error != nil {

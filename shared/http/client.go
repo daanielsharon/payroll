@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"shared/config"
+	"shared/constant"
 	shared_context "shared/context"
 	"time"
 
@@ -70,7 +71,17 @@ func (c *Client) DoRaw(ctx context.Context, serviceName, method, path string, in
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
 
-	// 👇 Inject the OTel context into the outgoing HTTP headers
+	if ip, ok := ctx.Value(constant.ContextIPAddress).(string); ok && ip != "" {
+		req.Header.Set("X-Forwarded-For", ip)
+	}
+	if requestID, ok := ctx.Value(constant.ContextRequestID).(string); ok && requestID != "" {
+		req.Header.Set("X-Request-ID", requestID)
+	}
+	if traceID, ok := ctx.Value(constant.ContextTraceID).(string); ok && traceID != "" {
+		req.Header.Set("X-Trace-ID", traceID)
+	}
+
+	// Inject the OTel context into the outgoing HTTP headers
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	resp, err := c.httpClient.Do(req)

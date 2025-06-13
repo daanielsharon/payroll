@@ -25,7 +25,7 @@ func InitRoutes(handler handlers.HandlerInterface) *chi.Mux {
 		r.Use(httphelper.AuthMiddleware)
 		r.Use(httphelper.JSONOnly)
 		r.With(httphelper.IsEmployee).Post("/submit", handler.Submit)
-		r.Get("/update-payroll", handler.UpdateOvertimePayroll)
+		r.Post("/update-payroll", handler.UpdateOvertimePayroll)
 	})
 
 	return r

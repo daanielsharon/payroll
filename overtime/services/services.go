@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -71,14 +72,21 @@ func (s *Service) UpdateOvertimePayroll(ctx context.Context, startDate, endDate 
 
 	overtime := s.GetOvertimeByDate(ctx, startDate, endDate)
 	if len(overtime) == 0 {
+		span.RecordError(errors.New("no overtime found"))
 		return errors.New("no overtime found")
 	}
 
 	span.AddEvent("Updating payroll")
 
 	for _, ot := range overtime {
+		data, _ := json.Marshal(ot)
+		ot.OldDataJSON = data
+
 		ot.PayrollRunID = &payrollRunId
-		s.storage.UpdatePayroll(ctx, ot)
+		err := s.storage.UpdatePayroll(ctx, ot)
+		if err != nil {
+			span.RecordError(fmt.Errorf("error updating payrollRunId: %v", payrollRunId))
+		}
 	}
 
 	return nil

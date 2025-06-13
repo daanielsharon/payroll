@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reimbursement/storage"
@@ -40,14 +41,21 @@ func (s *Service) UpdateReimbursementPayroll(ctx context.Context, startDate, end
 
 	reimbursement := s.GetReimbursementByDate(ctx, startDate, endDate)
 	if len(reimbursement) == 0 {
+		span.RecordError(errors.New("no reimbursement found"))
 		return errors.New("no reimbursement found")
 	}
 
 	span.AddEvent("Updating payroll")
 
 	for _, re := range reimbursement {
+		data, _ := json.Marshal(re)
+		re.OldDataJSON = data
+
 		re.PayrollRunID = &payrollRunId
-		s.storage.UpdatePayroll(ctx, re)
+		err := s.storage.UpdatePayroll(ctx, re)
+		if err != nil {
+			span.RecordError(fmt.Errorf("error updating payrollRunId: %v", payrollRunId))
+		}
 	}
 
 	return nil

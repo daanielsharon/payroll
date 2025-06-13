@@ -124,12 +124,19 @@ func (s *Service) UpdateAttendancePayroll(ctx context.Context, startDate, endDat
 	attendance := s.GetAttendanceByDate(ctx, startDate, endDate)
 
 	if len(attendance) == 0 {
+		span.RecordError(errors.New("no attendance found"))
 		return errors.New("no attendance found")
 	}
 
 	for _, att := range attendance {
+		data, _ := json.Marshal(att)
+		att.OldDataJSON = data
+
 		att.PayrollRunID = &payrollRunId
-		s.storage.UpdatePayroll(ctx, att)
+		err := s.storage.UpdatePayroll(ctx, att)
+		if err != nil {
+			span.RecordError(fmt.Errorf("error updating payrollRunId: %v", payrollRunId))
+		}
 	}
 
 	span.AddEvent("Updating payroll")

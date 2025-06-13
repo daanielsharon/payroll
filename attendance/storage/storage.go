@@ -75,7 +75,7 @@ func (s *DB) GetAttendanceByDate(ctx context.Context, startDate, endDate time.Ti
 	var attendance []models.Attendance
 
 	data := s.DB.WithContext(ctx).
-		Where("date BETWEEN ? AND ?", startDate, endDate).
+		Where("date BETWEEN ? AND ? AND payroll_run_id is null", startDate, endDate).
 		Find(&attendance)
 
 	if data.Error != nil {

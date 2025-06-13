@@ -2,6 +2,8 @@ package httphelper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"shared/config"
 	"shared/constant"
@@ -27,6 +29,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			JSONResponse(w, http.StatusUnauthorized, "Missing token", nil)
 			return
 		}
+		ctx := r.Context()
+		span := trace.SpanFromContext(ctx)
 
 		tokenStr := strings.TrimPrefix(auth, "Bearer ")
 
@@ -35,6 +39,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !token.Valid {
+			span.RecordError(errors.New("invalid token"))
 			JSONResponse(w, http.StatusUnauthorized, "Invalid token", nil)
 			return
 		}
@@ -44,11 +49,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		role := claims["role"].(string)
 
 		if userID == "" || role == "" {
+			span.RecordError(errors.New("invalid token, missing user id or role"))
 			JSONResponse(w, http.StatusUnauthorized, "Invalid token", nil)
 			return
 		}
 
-		ctx := shared_context.WithUserID(r.Context(), userID)
+		ctx = shared_context.WithUserID(ctx, userID)
 		ctx = shared_context.WithRole(ctx, role)
 		ctx = shared_context.WithToken(ctx, tokenStr)
 
@@ -61,6 +67,7 @@ func RequestMiddleware(next http.Handler) http.Handler {
 		ctx := r.Context()
 
 		ip := r.Header.Get("X-Forwarded-For")
+		fmt.Println("ip", ip)
 		if ip == "" {
 			ip = strings.Split(r.RemoteAddr, ":")[0]
 		}

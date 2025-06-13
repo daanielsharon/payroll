@@ -9,4 +9,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4M
     "date": "2025-06-12",
     "hours": 2.5
 }
+
+### Update overtime payroll
+POST http://localhost:8082/update-payroll
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
+
+{
+    "startDate": "2025-06-01",
+    "endDate": "2025-06-30",
+    "payrollRunId": "91238aad-9fc5-4a85-b859-078f564cb6ce"
+}
+
     

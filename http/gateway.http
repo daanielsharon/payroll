@@ -18,7 +18,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-    "username": "employee_mjmsip",
+    "username": "employee_2jq7p5",
     "password": "password123"
 }
 
@@ -34,7 +34,7 @@ Content-Type: application/json
 ### Attendance 
 POST http://localhost:8080/attendance/submit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4MDAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjU5ZGUyMjI4LWUxMzEtNDRhNC04N2Y2LWVmZWIyNjk3Zjk0NyJ9.Yv54YAkPHoxizdDKHOFwgw-3CpNou0f5wJgsoCVNlw8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Nzg4MjAsInJvbGUiOiJlbXBsb3llZSIsInN1YiI6IjgxMWVkZmQ0LWUyZjItNGIzMi1iZDBiLTI3MzQzZTNlZjc3MSJ9.Svm4KJE2XN_ZLY80hsiQ6WABRHTIi_JWJr9lIydEDoQ
 
 ### Overtime 
 POST http://localhost:8080/overtime/submit
@@ -56,9 +56,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3Mzg4M
     "description": "Reimbursement for travel"
 }
 
+### Create Payroll Period 
+POST http://localhost:8080/payroll/period
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3NzkzOTEsInJvbGUiOiJhZG1pbiIsInN1YiI6IjkxMjJkM2ZhLWZmYmItNGY3Zi04OGIxLTdjNGY0ZDUxYTI1YSJ9.SrO0wfYLnOhnJGfkWMutU5LXNP1YYZOBhTG2THQiHYE
+
+{
+    "period_name": "Period 1",
+    "start_date": "2025-06-01",
+    "end_date": "2025-06-30"
+}
+
 ### Payroll run
 POST http://localhost:8080/payroll/run
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3MTM3NDAsInJvbGUiOiJhZG1pbiIsInN1YiI6IjkxMjJkM2ZhLWZmYmItNGY3Zi04OGIxLTdjNGY0ZDUxYTI1YSJ9.8z9HOUNUu35bFbircr3LPNBfJjxk2zBGn4jKRMOFGco
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk3NzkzOTEsInJvbGUiOiJhZG1pbiIsInN1YiI6IjkxMjJkM2ZhLWZmYmItNGY3Zi04OGIxLTdjNGY0ZDUxYTI1YSJ9.SrO0wfYLnOhnJGfkWMutU5LXNP1YYZOBhTG2THQiHYE
+
+{
+    "period_id": "b26507c8-d9e3-43e2-81e0-390fbc6d1f69"
+}
 
 ### User
 GET http://localhost:8080/user/

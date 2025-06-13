@@ -36,13 +36,13 @@ func (h *Handler) CreatePayrollPeriod(w http.ResponseWriter, r *http.Request) {
 		EndDate:    utils.ConvertStringToDate(payrollPeriod.EndDate),
 	}
 
-	err := h.services.CreatePayrollPeriod(ctx, filteredPayrollPeriod)
+	err := h.services.CreatePayrollPeriod(ctx, &filteredPayrollPeriod)
 	if err != nil {
 		httphelper.JSONResponse(w, http.StatusInternalServerError, "Failed to create payroll period", nil)
 		return
 	}
 
-	httphelper.JSONResponse(w, http.StatusOK, "Payroll period created successfully", nil)
+	httphelper.JSONResponse(w, http.StatusOK, "Payroll period created successfully", filteredPayrollPeriod)
 }
 
 func (h *Handler) CreatePayrollRun(w http.ResponseWriter, r *http.Request) {

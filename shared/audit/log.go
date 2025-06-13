@@ -1,7 +1,6 @@
 package audit
 
 import (
-	"fmt"
 	"shared/constant"
 
 	"github.com/google/uuid"
@@ -25,7 +24,6 @@ func CreateLog(tx *gorm.DB, action string, obj Auditable) error {
 	requestIDUUID, _ := uuid.Parse(requestID)
 	traceID, _ := ctx.Value(constant.ContextTraceID).(string)
 
-	fmt.Println("OLD DATA", obj.GetOldData())
 	log := Log{
 		ID:          uuid.New(),
 		TableName:   obj.GetTableName(),
