@@ -3,7 +3,6 @@ package httphelper
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"shared/config"
 	"shared/constant"
@@ -67,7 +66,6 @@ func RequestMiddleware(next http.Handler) http.Handler {
 		ctx := r.Context()
 
 		ip := r.Header.Get("X-Forwarded-For")
-		fmt.Println("ip", ip)
 		if ip == "" {
 			ip = strings.Split(r.RemoteAddr, ":")[0]
 		}

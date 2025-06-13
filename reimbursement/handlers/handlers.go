@@ -30,17 +30,21 @@ func (h *Handler) Submit(w http.ResponseWriter, r *http.Request) {
 	var reimbursementRequest models.ReimbursementRequest
 	err := json.NewDecoder(r.Body).Decode(&reimbursementRequest)
 	if err != nil {
+		span.RecordError(fmt.Errorf("invalid reimbursement request: %v", err))
 		httphelper.JSONResponse(w, http.StatusBadRequest, "Invalid reimbursement request", nil)
 		return
 	}
 
+	date := utils.ConvertStringToDate(reimbursementRequest.Date)
 	filteredReimbursementRequest := models.Reimbursement{
 		Amount:      reimbursementRequest.Amount,
 		Description: reimbursementRequest.Description,
+		Date:        date,
 	}
 
 	err = h.services.Submit(ctx, filteredReimbursementRequest)
 	if err != nil {
+		span.RecordError(fmt.Errorf("reimbursement run failed: %v", err))
 		httphelper.JSONResponse(w, http.StatusInternalServerError, "Reimbursement run failed", nil)
 		return
 	}

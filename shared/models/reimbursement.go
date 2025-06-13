@@ -15,11 +15,13 @@ import (
 type ReimbursementRequest struct {
 	Amount      float64 `json:"amount"`
 	Description string  `json:"description"`
+	Date        string  `json:"date"`
 }
 
 type Reimbursement struct {
 	ID           uuid.UUID      `gorm:"type:uuid;primaryKey" json:"id"`
 	UserID       uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
+	Date         time.Time      `gorm:"type:timestamp;not null" json:"date"`
 	Amount       float64        `gorm:"type:numeric(14,2);not null;check:amount >= 0" json:"amount"`
 	Description  string         `gorm:"type:text" json:"description"`
 	PayrollRunID *uuid.UUID     `gorm:"type:uuid;index" json:"payroll_run_id"`
