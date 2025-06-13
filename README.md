@@ -64,14 +64,4 @@ Two primary roles are supported:
 
 ### Environment Setup
 
-1. Create a `.env` file by copying the example configuration:
-
-```bash
-cp .env.example .env
-```
-
-2. Edit the `.env` file and update the following variables with your configuration:
-   - `DB_*`: Database connection details
-   - `*_PORT`: Ports for each service
-   - `JWT_SECRET`: A secure secret key for JWT token generation
-   - `HOST`: The host address for your services
+For detailed setup and running instructions, see the [RUN.md](RUN.md) file.
